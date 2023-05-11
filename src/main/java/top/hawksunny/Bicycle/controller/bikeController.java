@@ -21,7 +21,7 @@ public class bikeController {
         List<Bike> result = service.getList(id);
 
         res.setResult(result);
-        res.setCode(200);
+        res.setSuccess(true);
         res.setMsg("查询成功");
 
         return res;
@@ -32,7 +32,7 @@ public class bikeController {
         service.add(b);
 
         res.setResult(b);
-        res.setCode(200);
+        res.setSuccess(true);
         res.setMsg("新增成功");
 
         return res;
@@ -43,7 +43,7 @@ public class bikeController {
         service.update(b);
 
         res.setResult(b);
-        res.setCode(200);
+        res.setSuccess(true);
         res.setMsg("更新成功");
 
         return res;
@@ -54,7 +54,7 @@ public class bikeController {
         service.delete(id);
 
         res.setResult(id);
-        res.setCode(200);
+        res.setSuccess(true);
         res.setMsg("删除成功");
 
         return res;

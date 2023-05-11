@@ -7,6 +7,6 @@ import org.springframework.stereotype.Component;
 @Component
 public class Response {
     private String msg;
-    private Integer code;
+    private Boolean success;
     private Object result;
 }
