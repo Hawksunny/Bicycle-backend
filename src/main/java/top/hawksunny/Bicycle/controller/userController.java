@@ -2,7 +2,6 @@ package top.hawksunny.Bicycle.controller;
 
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import top.hawksunny.Bicycle.entity.Response;
 import top.hawksunny.Bicycle.entity.User;
@@ -17,14 +16,17 @@ import java.util.concurrent.TimeUnit;
 @RestController
 @RequestMapping("/user")
 public class userController {
-    @Autowired
-    private userService service;
+    private final userService service;
 
-    @Autowired
-    private Response res;
+    private final Response res;
 
-    @Autowired
-    private RedisUtils redisUtils;
+    private final RedisUtils redisUtils;
+
+    public userController(Response res, userService service, RedisUtils redisUtils) {
+        this.res = res;
+        this.service = service;
+        this.redisUtils = redisUtils;
+    }
 
     @RequestMapping("/list")
     public @ResponseBody Response getUserList() {
@@ -78,8 +80,9 @@ public class userController {
         // 根据用户名查询数据库中有没有该用户
         User user = service.getUserByUsername(username);
         if (user == null) {
-            res.setSuccess(false);
+            res.setResult(null);
             res.setMsg("用户不存在，请注册！");
+            res.setSuccess(false);
         } else {
             String password_ = user.getPassword();
             if (Objects.equals(password_, password)) {
@@ -87,11 +90,11 @@ public class userController {
                 String token = JwtUtils.createToken(username);
                 redisUtils.set(token, user, 10L, TimeUnit.MINUTES);
                 // 响应体
-                response.addCookie(new Cookie("token", token));
-                res.setResult(token);
-                res.setMsg("登陆成功");
+                res.setResult(user);
+                res.setMsg(token);
                 res.setSuccess(true);
             } else {
+                res.setResult(null);
                 res.setMsg("密码错误！");
                 res.setSuccess(false);
             }

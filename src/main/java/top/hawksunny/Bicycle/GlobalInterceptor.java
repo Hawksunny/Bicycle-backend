@@ -5,7 +5,6 @@ import com.alibaba.fastjson.JSON;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 import top.hawksunny.Bicycle.entity.Response;
@@ -16,25 +15,19 @@ import java.util.concurrent.TimeUnit;
 
 @Component
 public class GlobalInterceptor implements HandlerInterceptor {
-    @Autowired
-    private RedisUtils redisUtils;
+    private final RedisUtils redisUtils;
 
-    @Autowired
-    private Response res;
+    private final Response res;
+
+    public GlobalInterceptor(Response res, RedisUtils redisUtils) {
+        this.res = res;
+        this.redisUtils = redisUtils;
+    }
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        // 获取请求cookie中的token
-        String token = null;
-        Cookie[] cookies = request.getCookies();
-        if (cookies != null) {
-            for (Cookie cookie : cookies) {
-                if ("token".equals(cookie.getName())) {
-                    token = cookie.getValue();
-                    break;
-                }
-            }
-        }
+        // 获取请求头中的token
+        String token = request.getHeader("Token");
 
         // 如果token没过期，则延长过期时间
         if (token != null) {
