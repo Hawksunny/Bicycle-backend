@@ -39,7 +39,7 @@ public class GlobalInterceptor implements HandlerInterceptor {
         }
 
         // 处理token所有不合法情况
-        res.setMsg("用户未登陆或登陆状态已过期");
+        res.setMsg("用户未登录或登录状态已过期");
         res.setSuccess(false);
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         response.setContentType("application/json;charset=utf-8");

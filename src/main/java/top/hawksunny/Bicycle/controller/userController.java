@@ -1,7 +1,5 @@
 package top.hawksunny.Bicycle.controller;
 
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.web.bind.annotation.*;
 import top.hawksunny.Bicycle.entity.Response;
 import top.hawksunny.Bicycle.entity.User;
@@ -73,7 +71,7 @@ public class userController {
     }
 
     @RequestMapping("/login")
-    public @ResponseBody Response login(@RequestBody User form, HttpServletResponse response) {
+    public @ResponseBody Response login(@RequestBody User form) {
         String username = form.getUsername();
         String password = form.getPassword();
 
@@ -98,6 +96,23 @@ public class userController {
                 res.setMsg("密码错误！");
                 res.setSuccess(false);
             }
+        }
+
+        return res;
+    }
+
+    @GetMapping("/auth")
+    public @ResponseBody Response auth(@RequestParam String token) {
+        Object obj = redisUtils.get(token);
+        if (obj != null) {
+            redisUtils.set(token, obj, 3L, TimeUnit.MINUTES);
+            res.setSuccess(true);
+            res.setMsg("token未过期，且已为期延长过期时间");
+            res.setResult(null);
+        } else {
+            res.setSuccess(false);
+            res.setMsg("token已过期，请重新登录");
+            res.setResult(null);
         }
 
         return res;
