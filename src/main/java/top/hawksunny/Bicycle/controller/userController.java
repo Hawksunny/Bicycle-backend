@@ -27,8 +27,8 @@ public class userController {
     }
 
     @RequestMapping("/list")
-    public @ResponseBody Response getUserList() {
-        List<User> result = service.getList();
+    public @ResponseBody Response getUserList(Integer pageNumber, Integer pageSize) {
+        List<User> result = service.getList(pageNumber, pageSize);
 
         res.setResult(result);
         res.setSuccess(true);
@@ -38,23 +38,12 @@ public class userController {
     }
 
     @RequestMapping("/add")
-    public @ResponseBody Response addUser(User u) {
+    public @ResponseBody Response addUser(@RequestBody User u) {
         service.add(u);
 
-        res.setResult(u);
+        res.setResult(null);
         res.setSuccess(true);
         res.setMsg("新增成功");
-
-        return res;
-    }
-
-    @RequestMapping("/update")
-    public @ResponseBody Response updateUser(User u) {
-        service.update(u);
-
-        res.setResult(u);
-        res.setSuccess(true);
-        res.setMsg("更新成功");
 
         return res;
     }
@@ -63,7 +52,7 @@ public class userController {
     public @ResponseBody Response deleteUser(Integer uid) {
         service.delete(uid);
 
-        res.setResult(uid);
+        res.setResult(null);
         res.setSuccess(true);
         res.setMsg("删除成功");
 
@@ -72,11 +61,11 @@ public class userController {
 
     @RequestMapping("/login")
     public @ResponseBody Response login(@RequestBody User form) {
-        String username = form.getUsername();
+        Integer uid = form.getUid();
         String password = form.getPassword();
 
         // 根据用户名查询数据库中有没有该用户
-        User user = service.getUserByUsername(username);
+        User user = service.getUserByUid(uid);
         if (user == null) {
             res.setResult(null);
             res.setMsg("用户不存在，请注册！");
@@ -84,9 +73,9 @@ public class userController {
         } else {
             String password_ = user.getPassword();
             if (Objects.equals(password_, password)) {
-                // 生成token并存入redis中，初始有效时间设置为10分钟
-                String token = JwtUtils.createToken(username);
-                redisUtils.set(token, user, 10L, TimeUnit.MINUTES);
+                // 生成token并存入redis中，并设置初始有效时间
+                String token = JwtUtils.createToken(String.valueOf(uid));
+                redisUtils.set(token, user, 30L, TimeUnit.MINUTES);
                 // 响应体
                 res.setResult(user);
                 res.setMsg(token);
@@ -105,7 +94,7 @@ public class userController {
     public @ResponseBody Response auth(@RequestParam String token) {
         Object obj = redisUtils.get(token);
         if (obj != null) {
-            redisUtils.set(token, obj, 3L, TimeUnit.MINUTES);
+            redisUtils.set(token, obj, 30L, TimeUnit.MINUTES);
             res.setSuccess(true);
             res.setMsg("token未过期，且已为期延长过期时间");
             res.setResult(null);
@@ -114,6 +103,36 @@ public class userController {
             res.setMsg("token已过期，请重新登录");
             res.setResult(null);
         }
+
+        return res;
+    }
+
+    @GetMapping("/modify_base")
+    public @ResponseBody Response modifyBase(@RequestParam String username, @RequestParam String telephone, @RequestParam Integer uid) {
+        service.updateBaseInfo(username, telephone, uid);
+        res.setSuccess(true);
+        res.setMsg("成功更新" + username + "的基本信息");
+        res.setResult(null);
+
+        return res;
+    }
+
+    @PostMapping("/modify_passwd")
+    public @ResponseBody Response modifyBase(@RequestBody User u) {
+        service.updatePasswd(u.getPassword(), u.getUid());
+        res.setSuccess(true);
+        res.setMsg("成功修改密码");
+        res.setResult(null);
+
+        return res;
+    }
+
+    @PostMapping("/update")
+    public @ResponseBody Response update(@RequestBody User u) {
+        service.update(u);
+        res.setSuccess(true);
+        res.setMsg("更新成功");
+        res.setResult(null);
 
         return res;
     }

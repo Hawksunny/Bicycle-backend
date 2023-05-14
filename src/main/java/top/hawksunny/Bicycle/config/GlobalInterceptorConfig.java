@@ -15,5 +15,5 @@ public class GlobalInterceptorConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         InterceptorRegistration interceptorRegistration =  registry.addInterceptor(globalInterceptor);
-        interceptorRegistration.addPathPatterns("/**").excludePathPatterns("/user/login", "/user/logout", "/user/auth", "/bike/list");
+        interceptorRegistration.addPathPatterns("/**").excludePathPatterns("/user/login", "/user/logout", "/user/auth", "/bike/list", "/user/list");
     }}

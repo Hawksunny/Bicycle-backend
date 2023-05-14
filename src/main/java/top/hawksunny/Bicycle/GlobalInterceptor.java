@@ -2,7 +2,6 @@ package top.hawksunny.Bicycle;
 
 
 import com.alibaba.fastjson.JSON;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.stereotype.Component;
@@ -29,11 +28,11 @@ public class GlobalInterceptor implements HandlerInterceptor {
         // 获取请求头中的token
         String token = request.getHeader("Token");
 
-        // 如果token没过期，则延长过期时间
+        // 如果token没过期，则重置过期时间
         if (token != null) {
             Object obj = redisUtils.get(token);
             if (obj != null) {
-                redisUtils.set(token, obj, 3L, TimeUnit.MINUTES);
+                redisUtils.set(token, obj, 30L, TimeUnit.MINUTES);
                 return true;
             }
         }
