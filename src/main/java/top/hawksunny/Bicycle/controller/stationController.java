@@ -11,14 +11,17 @@ import java.util.List;
 @RestController
 @RequestMapping("/station")
 public class stationController {
-    @Autowired
-    private stationService service;
-    @Autowired
-    private Response res;
+    private final stationService service;
+    private final Response res;
+
+    public stationController(stationService service, Response res) {
+        this.service = service;
+        this.res = res;
+    }
 
     @RequestMapping("/list")
-    public @ResponseBody Response getStationList(Integer id) {
-        List<Station> result = service.getList(id);
+    public @ResponseBody Response getStationList(@RequestParam Integer pageNumber, @RequestParam Integer pageSize) {
+        List<Station> result = service.getList(pageNumber, pageSize);
 
         res.setResult(result);
         res.setSuccess(true);
@@ -28,10 +31,10 @@ public class stationController {
     }
 
     @PostMapping("/add")
-    public @ResponseBody Response addStation(Station s) {
+    public @ResponseBody Response addStation(@RequestBody Station s) {
         service.add(s);
 
-        res.setResult(s);
+        res.setResult(null);
         res.setSuccess(true);
         res.setMsg("新增成功");
 
@@ -39,18 +42,18 @@ public class stationController {
     }
 
     @PostMapping("/update")
-    public @ResponseBody Response updateStation(Station s) {
+    public @ResponseBody Response updateStation(@RequestBody Station s) {
         service.update(s);
 
-        res.setResult(s);
+        res.setResult(null);
         res.setSuccess(true);
         res.setMsg("更新成功");
 
         return res;
     }
 
-    @PostMapping("/delete")
-    public @ResponseBody Response deleteStation(Integer id) {
+    @GetMapping("/delete")
+    public @ResponseBody Response deleteStation(@RequestParam Integer id) {
         service.delete(id);
 
         res.setResult(id);

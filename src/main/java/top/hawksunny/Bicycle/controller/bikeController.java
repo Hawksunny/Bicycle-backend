@@ -11,14 +11,17 @@ import java.util.List;
 @RestController
 @RequestMapping("/bike")
 public class bikeController {
-    @Autowired
-    private bikeService service;
-    @Autowired
-    private Response res;
+    private final bikeService service;
+    private final Response res;
 
-    @RequestMapping("/list")
-    public @ResponseBody Response getBikeList(Integer id) {
-        List<Bike> result = service.getList(id);
+    public bikeController(bikeService service, Response res) {
+        this.service = service;
+        this.res = res;
+    }
+
+    @RequestMapping("/list_by_sid")
+    public @ResponseBody Response getBikeListBySid(@RequestParam Integer sid) {
+        List<Bike> result = service.getListBySid(sid);
 
         res.setResult(result);
         res.setSuccess(true);

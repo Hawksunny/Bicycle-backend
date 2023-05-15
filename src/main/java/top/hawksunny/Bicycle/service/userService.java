@@ -1,6 +1,5 @@
 package top.hawksunny.Bicycle.service;
 
-import ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -23,7 +22,7 @@ public class userService {
     // 查询用户列表
     public List<User> getList(@RequestParam int pageNumber, @RequestParam int pageSize) {
         int startIndex = (pageNumber - 1) * pageSize;
-        String sql = "SELECT * FROM user LIMIT ?, ?";
+        String sql = "SELECT * FROM User LIMIT ?, ?";
         return jdbcTemplate.query(sql, new Object[]{startIndex, pageSize}, new BeanPropertyRowMapper<>(User.class));
     }
 

@@ -1,6 +1,5 @@
 package top.hawksunny.Bicycle.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
@@ -12,13 +11,16 @@ import java.util.List;
 @Service
 @Component
 public class stationService {
-    @Autowired
-    private JdbcTemplate jdbcTemplate;
+    private final JdbcTemplate jdbcTemplate;
 
-    public List<Station> getList(Integer id) {
-        String sql = "select * from Station";
-        if (id != null)  sql = "select * from Station where id=" + id;
-        return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Station.class));
+    public stationService(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
+
+    public List<Station> getList(Integer pageNumber, Integer pageSize) {
+        int startIndex = (pageNumber - 1) * pageSize;
+        String sql = "select * from Station limit ?, ?";
+        return jdbcTemplate.query(sql, new Object[]{startIndex, pageSize}, new BeanPropertyRowMapper<>(Station.class));
     }
 
     public void add(Station s) {

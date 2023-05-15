@@ -11,17 +11,15 @@ import java.util.List;
 @Service
 @Component
 public class bikeService {
-    @Autowired
-    private JdbcTemplate jdbcTemplate;
+    private final JdbcTemplate jdbcTemplate;
 
-    public List<Bike> getList(Integer id) {
-        String sql;
-        if (id != null) {
-            sql = "select * from Bike " + "where id=" + id;
-        } else {
-            sql = "select * from Bike";
-        }
-        return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Bike.class));
+    public bikeService(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
+
+    public List<Bike> getListBySid(Integer sid) {
+        String sql = "select * from Bike where FromStation = ?";
+        return jdbcTemplate.query(sql, new Object[]{sid}, new BeanPropertyRowMapper<>(Bike.class));
     }
 
     public void add(Bike b) {
