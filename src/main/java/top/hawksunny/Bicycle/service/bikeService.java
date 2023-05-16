@@ -5,6 +5,7 @@ import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
 import top.hawksunny.Bicycle.entity.Bike;
 import java.util.List;
 
@@ -17,9 +18,19 @@ public class bikeService {
         this.jdbcTemplate = jdbcTemplate;
     }
 
+    public List<Bike> getAllBike() {
+        String sql = "select * from Bike";
+        return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Bike.class));
+    }
+
     public List<Bike> getListBySid(Integer sid) {
         String sql = "select * from Bike where FromStation = ?";
         return jdbcTemplate.query(sql, new Object[]{sid}, new BeanPropertyRowMapper<>(Bike.class));
+    }
+
+    public Bike getListById(Integer id) {
+        String sql = "select * from Bike where Id = ?";
+        return jdbcTemplate.queryForObject(sql, new Object[]{id}, new BeanPropertyRowMapper<>(Bike.class));
     }
 
     public void add(Bike b) {

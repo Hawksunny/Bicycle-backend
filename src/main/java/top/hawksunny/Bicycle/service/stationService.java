@@ -17,6 +17,11 @@ public class stationService {
         this.jdbcTemplate = jdbcTemplate;
     }
 
+    public Station getStationById(Integer id) {
+        String sql = "select * from Station where Id = ?";
+        return jdbcTemplate.queryForObject(sql, new Object[]{id}, new BeanPropertyRowMapper<>(Station.class));
+    }
+
     public List<Station> getList(Integer pageNumber, Integer pageSize) {
         int startIndex = (pageNumber - 1) * pageSize;
         String sql = "select * from Station limit ?, ?";

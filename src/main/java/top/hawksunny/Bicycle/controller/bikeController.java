@@ -19,6 +19,17 @@ public class bikeController {
         this.res = res;
     }
 
+    @RequestMapping("/list_all")
+    public @ResponseBody Response getAllBikes() {
+        List<Bike> result = service.getAllBike();
+
+        res.setResult(result);
+        res.setSuccess(true);
+        res.setMsg("查询成功");
+
+        return res;
+    }
+
     @RequestMapping("/list_by_sid")
     public @ResponseBody Response getBikeListBySid(@RequestParam Integer sid) {
         List<Bike> result = service.getListBySid(sid);
@@ -30,8 +41,19 @@ public class bikeController {
         return res;
     }
 
+    @RequestMapping("/list_by_id")
+    public @ResponseBody Response getBikeListById(@RequestParam Integer id) {
+        Bike result = service.getListById(id);
+
+        res.setResult(result);
+        res.setSuccess(true);
+        res.setMsg("查询成功");
+
+        return res;
+    }
+
     @PostMapping("/add")
-    public @ResponseBody Response addBike(Bike b) {
+    public @ResponseBody Response addBike(@RequestBody Bike b) {
         service.add(b);
 
         res.setResult(b);
@@ -42,7 +64,7 @@ public class bikeController {
     }
 
     @PostMapping("/update")
-    public @ResponseBody Response updateBike(Bike b) {
+    public @ResponseBody Response updateBike(@RequestBody Bike b) {
         service.update(b);
 
         res.setResult(b);
@@ -52,8 +74,8 @@ public class bikeController {
         return res;
     }
 
-    @PostMapping("/delete")
-    public @ResponseBody Response deleteBike(Integer id) {
+    @GetMapping("/delete")
+    public @ResponseBody Response deleteBike(@RequestParam Integer id) {
         service.delete(id);
 
         res.setResult(id);

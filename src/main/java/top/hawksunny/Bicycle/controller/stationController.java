@@ -30,6 +30,17 @@ public class stationController {
         return res;
     }
 
+    @RequestMapping("/list_by_id")
+    public @ResponseBody Response getStationById(@RequestParam Integer id) {
+        Station result = service.getStationById(id);
+
+        res.setResult(result);
+        res.setSuccess(true);
+        res.setMsg("查询成功");
+
+        return res;
+    }
+
     @PostMapping("/add")
     public @ResponseBody Response addStation(@RequestBody Station s) {
         service.add(s);
