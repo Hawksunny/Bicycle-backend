@@ -11,14 +11,17 @@ import java.util.List;
 @RestController
 @RequestMapping("/order")
 public class orderController {
-    @Autowired
-    private orderService service;
-    @Autowired
-    private Response res;
+    private final orderService service;
+    private final Response res;
 
-    @RequestMapping("/list")
-    public @ResponseBody Response getOrderList() {
-        List<Order> result = service.getList();
+    public orderController(orderService service, Response res) {
+        this.service = service;
+        this.res = res;
+    }
+
+    @RequestMapping("/list_by_uid")
+    public @ResponseBody Response getOrderListByUid(@RequestParam Integer uid) {
+        List<Order> result = service.getListByUid(uid);
 
         res.setResult(result);
         res.setSuccess(true);
@@ -28,9 +31,8 @@ public class orderController {
     }
 
     @RequestMapping("/add")
-    public @ResponseBody Response addOrder(Order s) {
-        service.add(s);
-        res.setResult(s);
+    public @ResponseBody Response addOrder(@RequestBody Order o) {
+        service.add(o);
         res.setSuccess(true);
         res.setMsg("新增成功");
 
@@ -49,7 +51,7 @@ public class orderController {
     }
 
     @RequestMapping("/delete")
-    public @ResponseBody Response deleteOrder(Integer id) {
+    public @ResponseBody Response deleteOrder(@RequestParam Integer id) {
         service.delete(id);
 
         res.setResult(id);

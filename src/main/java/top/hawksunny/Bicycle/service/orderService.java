@@ -1,5 +1,6 @@
 package top.hawksunny.Bicycle.service;
 
+import org.apache.ibatis.ognl.ObjectElementsAccessor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -11,12 +12,15 @@ import java.util.List;
 @Service
 @Component
 public class orderService {
-    @Autowired
-    private JdbcTemplate jdbcTemplate;
+    private final JdbcTemplate jdbcTemplate;
 
-    public List<Order> getList() {
-        String sql = "select * from `Order`";
-        return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(Order.class));
+    public orderService(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
+
+    public List<Order> getListByUid(Integer uid) {
+        String sql = "select * from `Order` where UID = ?";
+        return jdbcTemplate.query(sql, new Object[]{uid}, new BeanPropertyRowMapper<>(Order.class));
     }
 
     public void add(Order o) {
