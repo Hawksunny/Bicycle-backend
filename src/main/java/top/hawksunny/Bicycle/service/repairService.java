@@ -1,18 +1,21 @@
 package top.hawksunny.Bicycle.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import top.hawksunny.Bicycle.entity.Repair;
+
 import java.util.List;
 
 @Service
 @Component
 public class repairService {
-    @Autowired
-    private JdbcTemplate jdbcTemplate;
+    private final JdbcTemplate jdbcTemplate;
+
+    public repairService(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+    }
 
     public List<Repair> getList() {
         String sql = "select * from Repair";
@@ -20,13 +23,13 @@ public class repairService {
     }
 
     public void add(Repair r) {
-        String sql = "insert into Repair(BikeID, ReportTime, ReporterID, IsRepaired) values(?, ?, ?, ?)";
-        jdbcTemplate.update(sql, r.getBikeId(), r.getReportTime(), r.getReporterId(), r.getIsRepaired());
+        String sql = "insert into Repair(BikeID, ReportTime, Reporter, Status) values(?, ?, ?, ?)";
+        jdbcTemplate.update(sql, r.getBikeId(), r.getReportTime(), r.getReporter(), r.getStatus());
     }
 
     public void update(Repair r) {
-        String sql = "update Repair set BikeID = ?, ReportTime = ?, ReporterID = ?, IsRepaired = ? where ID = ?";
-        jdbcTemplate.update(sql, r.getBikeId(), r.getReportTime(), r.getReporterId(), r.getIsRepaired(), r.getId());
+        String sql = "update Repair set BikeID = ?, ReportTime = ?, Reporter = ?, Status = ? where ID = ?";
+        jdbcTemplate.update(sql, r.getBikeId(), r.getReportTime(), r.getReporter(), r.getStatus(), r.getId());
     }
 
     public void delete(Integer id) {

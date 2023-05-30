@@ -1,9 +1,8 @@
 package top.hawksunny.Bicycle.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import top.hawksunny.Bicycle.entity.Response;
 import top.hawksunny.Bicycle.entity.Repair;
+import top.hawksunny.Bicycle.entity.Response;
 import top.hawksunny.Bicycle.service.repairService;
 
 import java.util.List;
@@ -11,10 +10,13 @@ import java.util.List;
 @RestController
 @RequestMapping("/repair")
 public class repairController {
-    @Autowired
-    private repairService service;
-    @Autowired
-    private Response res;
+    private final repairService service;
+    private final Response res;
+
+    public repairController(repairService service, Response res) {
+        this.service = service;
+        this.res = res;
+    }
 
     @GetMapping("/list")
     public @ResponseBody Response getRepairList() {
@@ -28,10 +30,9 @@ public class repairController {
     }
 
     @PostMapping("/add")
-    public @ResponseBody Response addRepair(Repair s) {
+    public @ResponseBody Response addRepair(@RequestBody Repair s) {
         service.add(s);
 
-        res.setResult(s);
         res.setSuccess(true);
         res.setMsg("新增成功");
 

@@ -11,6 +11,6 @@ public class Repair {
     private Integer bikeId;
     @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
     private Timestamp reportTime;
-    private Integer reporterId;
-    private Boolean isRepaired;
+    private Integer reporter;
+    private Boolean status;
 }
